@@ -53,33 +53,70 @@ unsigned long pTime = 0;
 
 ////============
 
+// zmienne dla switch counter
+int stanE = 1;
+int timer2;
+
+#define outputA 12
+#define outputB 13
+
+ int counter = 0; 
+ 
 
 
+//==++++
 
+// zmienne informacyjne
+int TimeN = 0;
+int TimeS = 0;
+int Q1 = 0;
+int Q2 = 0;
 
 
 void setup() { 
 
   Serial.begin(9600);
-
+  pinMode (outputA,INPUT);
+  pinMode (outputB,INPUT);
   lcd.begin(16,2);
   lcd.setCursor(0,0);
   timer = 3;
   int prvKey = btnNONE;
+   
    
 
   
 
 }
 
-void loop() {
+void loop() {  
+  
+  
+  lcd_key = read_LCD_buttons();
+  
+ // counter switch
+  switch(lcd_key){
+    case btnUP:{
+      counter++;
+      delay(100);
+      break;
+     }
+      case btnDOWN:{
+      counter--;
+      delay(100);
+      break;
+      }  
+    
+    }
+
+ 
 
 
 
   
 //switch wyswietlacza zmienne
 
- lcd_key = read_LCD_buttons();
+ 
  switch(stanLCD){
       
       case 1:{        
@@ -87,7 +124,7 @@ void loop() {
         lcd.print("    BEND-001     ");
         if(timer == 0){
          stanLCD = 2; 
-         lcd_key = 5;
+         
         } 
          break;     
       }
@@ -97,9 +134,12 @@ void loop() {
         lcd.print("USTAW CZAS      ");
         lcd.setCursor(0,1);
         lcd.print("NAGRZEWANIA     ");
+        lcd.setCursor(12,1);
+        lcd.print(counter);
        if(lcd_key == btnSELECT){
-          stanLCD = 3; 
-          lcd_key = 5; 
+          stanLCD = 3;
+          TimeN = counter;
+          counter = 0;        
           delay(300);    
         }
         
@@ -111,9 +151,12 @@ void loop() {
         lcd.print("USTAW CZAS      ");
         lcd.setCursor(0,1);
         lcd.print("STUDZENIA       ");
+        lcd.setCursor(12,1);
+        lcd.print(counter);
         if(lcd_key == btnSELECT){
-          stanLCD = 4; 
-          lcd_key = 5; 
+          TimeS = counter;
+          counter = 0; 
+          stanLCD = 4;          
           delay(300);   
         }
         
@@ -125,9 +168,12 @@ void loop() {
         lcd.print("USTAW POZYCJE   ");
         lcd.setCursor(0,1);
         lcd.print("SERWA1          ");
+        lcd.setCursor(12,1);
+        lcd.print(counter);
         if(lcd_key == btnSELECT){
-          stanLCD = 5;
-          lcd_key = 5; 
+          Q1 = counter;
+          counter = 0; 
+          stanLCD = 5;           
           delay(300);        
         }       
         break;           
@@ -138,9 +184,12 @@ void loop() {
         lcd.print("USTAW POZYCJE   ");
         lcd.setCursor(0,1);
         lcd.print("SERWA2          ");
+        lcd.setCursor(12,1);
+        lcd.print(counter);
         if(lcd_key == btnSELECT){
-          stanLCD = 6;
-          lcd_key = 5; 
+          Q2 = counter;
+          counter = 0; 
+          stanLCD = 6;           
           delay(300);        
         }       
         break;           
@@ -152,8 +201,7 @@ void loop() {
         lcd.setCursor(0,1);
         lcd.print("SELECT TO END          ");
         if(lcd_key == btnSELECT){
-          stanLCD = 2;
-          lcd_key = 5; 
+          stanLCD = 2; 
           delay(300);        
         }       
         break;           
@@ -166,7 +214,23 @@ void loop() {
   
   }
 
-  Serial.print(stanLCD);
+
+  // switch funkcyjny 
+
+
+
+
+
+
+
+
+
+
+
+
+  
+delay(100);
+ 
 
 
 
