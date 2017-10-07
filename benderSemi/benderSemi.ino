@@ -1,5 +1,3 @@
-
-
 #include <LiquidCrystal.h>
 #include <EEPROM.h>
 
@@ -47,16 +45,139 @@ int read_LCD_buttons()
 
 // ============= 
 
+//switch wyswietlacza zmienne
+int stanLCD = 1;
+int timer = 0;
+unsigned long pTime = 0;
+
+
+////============
+
+
+
+
+
+
 void setup() { 
+
+  Serial.begin(9600);
 
   lcd.begin(16,2);
   lcd.setCursor(0,0);
+  timer = 3;
+  int prvKey = btnNONE;
+   
 
   
 
 }
 
 void loop() {
+
+
+
+  
+//switch wyswietlacza zmienne
+
+ lcd_key = read_LCD_buttons();
+ switch(stanLCD){
+      
+      case 1:{        
+        lcd.setCursor(0,0);
+        lcd.print("    BEND-001     ");
+        if(timer == 0){
+         stanLCD = 2; 
+         lcd_key = 5;
+        } 
+         break;     
+      }
+      case 2:{
+        
+        lcd.setCursor(0,0);
+        lcd.print("USTAW CZAS      ");
+        lcd.setCursor(0,1);
+        lcd.print("NAGRZEWANIA     ");
+       if(lcd_key == btnSELECT){
+          stanLCD = 3; 
+          lcd_key = 5; 
+          delay(300);    
+        }
+        
+        break;
+        }
+
+       case 3:{
+        lcd.setCursor(0,0);
+        lcd.print("USTAW CZAS      ");
+        lcd.setCursor(0,1);
+        lcd.print("STUDZENIA       ");
+        if(lcd_key == btnSELECT){
+          stanLCD = 4; 
+          lcd_key = 5; 
+          delay(300);   
+        }
+        
+        break;
+        }
+
+       case 4:{
+        lcd.setCursor(0,0);
+        lcd.print("USTAW POZYCJE   ");
+        lcd.setCursor(0,1);
+        lcd.print("SERWA1          ");
+        if(lcd_key == btnSELECT){
+          stanLCD = 5;
+          lcd_key = 5; 
+          delay(300);        
+        }       
+        break;           
+       }
+
+        case 5:{
+        lcd.setCursor(0,0);
+        lcd.print("USTAW POZYCJE   ");
+        lcd.setCursor(0,1);
+        lcd.print("SERWA2          ");
+        if(lcd_key == btnSELECT){
+          stanLCD = 6;
+          lcd_key = 5; 
+          delay(300);        
+        }       
+        break;           
+       }
+
+        case 6:{
+        lcd.setCursor(0,0);
+        lcd.print("GIECIE          ");
+        lcd.setCursor(0,1);
+        lcd.print("SELECT TO END          ");
+        if(lcd_key == btnSELECT){
+          stanLCD = 2;
+          lcd_key = 5; 
+          delay(300);        
+        }       
+        break;           
+       }
+      
+  
+  
+  
+  
+  
+  }
+
+  Serial.print(stanLCD);
+
+
+
+////============
+
+unsigned long cTime = millis();
+if(cTime-pTime >= 1000){
+    pTime = cTime;
+    timer--;
+    if(timer < 0) timer = 0;  
+  }
  
 
 }
