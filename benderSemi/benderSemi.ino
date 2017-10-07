@@ -1,4 +1,5 @@
 #include <LiquidCrystal.h>
+#include <Servo.h>
 #include <EEPROM.h>
 
 
@@ -55,10 +56,10 @@ unsigned long pTime = 0;
 
 // zmienne dla switch counter
 int stanE = 1;
-int timer2;
+int timer2 = 0;
 
-#define outputA 12
-#define outputB 13
+#define A 12
+#define B 13
 
  int counter = 0; 
  
@@ -73,16 +74,28 @@ int Q1 = 0;
 int Q2 = 0;
 
 
+// zmienne switch funkcyjny
+
+Servo servo1;
+Servo servo2;
+
+
+int stan = 1;
+
+//________________
 void setup() { 
 
   Serial.begin(9600);
-  pinMode (outputA,INPUT);
-  pinMode (outputB,INPUT);
+  pinMode (A,OUTPUT);
+  pinMode (B,OUTPUT);
   lcd.begin(16,2);
   lcd.setCursor(0,0);
   timer = 3;
   int prvKey = btnNONE;
-   
+
+  servo1.attach(11);
+  servo2.attach(3);
+
    
 
   
@@ -217,30 +230,56 @@ void loop() {
 
   // switch funkcyjny 
 
-
-
-
-
-
-
-
-
-
-
-
-  
-delay(100);
+  switch(stan){
+    case 1:{
+      servo1.write(0);
+      servo2.write(0);
+      digitalWrite(A,LOW);
+      digitalWrite(B,LOW);     
+      if(lcd_key == btnRIGHT && stanLCD == 6) {
+        stan = 2;
+        timer2 = TimeN;
+      }
+      break;
+      }
+     case 2:{
+      servo1.write(0);
+      servo2.write(0);      
+      if(Q1 > 0) digitalWrite(A,HIGH); else digitalWrite(A,LOW);
+      if(Q2 > 0)digitalWrite(B,HIGH); else digitalWrite(B,LOW); 
+      if(timer2 == 0){               
+        stan = 3;
+        timer2 = TimeS; 
+      }               
  
+     break; 
+     }  
+     case 3:{
+      servo1.write(Q1);
+      servo2.write(Q2);
+      digitalWrite(A,LOW);
+      digitalWrite(B,LOW);
+       if(timer2 == 0){              
+        stan = 1;
+      }     
+      }  
+    
+  }
+  Serial.println(stan);  
+
+ delay(10);
 
 
 
 ////============
 
 unsigned long cTime = millis();
-if(cTime-pTime >= 1000){
+if(cTime-pTime >= 500){
     pTime = cTime;
     timer--;
-    if(timer < 0) timer = 0;  
+    if(timer < 0) timer = 0;
+    timer2--;
+    if(timer2 < 0) timer2 = 0;  
   }
  
 
